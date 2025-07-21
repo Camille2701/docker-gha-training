@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - master
   pull_request:
     branches:
       - main
+      - master
 
 env:
   REGISTRY: docker.io
@@ -24,7 +26,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
       
     - name: Log in to Docker Hub
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: docker/login-action@v3
       with:
         registry: ${{ env.REGISTRY }}
@@ -53,8 +55,8 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         
-    - name: Push Docker image (main branch only)
-      if: github.ref == 'refs/heads/main'
+    - name: Push Docker image (main/master branch only)
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v5
       with:
         context: .
